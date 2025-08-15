@@ -3,12 +3,13 @@ import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from "react-native";
 import { HomeScreenNavigationProp, HomeStackParamList } from "../../commons/types/MyTypes";
 import WeatherForecast from "./WeatherForecast";
 import DiagnosisSteps from "./DiagnosisSteps";
-import DiagnosisHistorySection from "./DiagnosisHistorySection";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { showToastWithGravityAndOffset } from "../../commons/toasts";
 import { isNotEmptyString } from "../../commons/utils/stringUtils";
 import { Asset } from "react-native-image-picker";
+import { styles } from "./HomeStyle";
+import { DiagnosisHistorySection } from "./DiagnosisHistorySection";
 
 
 
@@ -47,16 +48,5 @@ const Home: React.FC<{ navigation: HomeScreenNavigationProp }> = ({ navigation }
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f8f9fa',
-        paddingHorizontal: 10
-    },
-    content: {
-        flex: 1,
-        paddingHorizontal: 16,
-    },
-})
 
 export default Home;

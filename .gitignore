@@ -78,6 +78,7 @@ yarn-error.log
 #native
 android/app/build/
 android/app/google-services.json
+android/app/debug.keystore
 
 ios/build/
 **/build/

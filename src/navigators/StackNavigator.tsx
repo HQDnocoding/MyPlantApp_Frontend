@@ -1,7 +1,6 @@
 import React from "react"
 import { Image, TouchableOpacity, View } from "react-native";
 import { Avatar, Icon, IconButton } from "react-native-paper";
-import Home from "../components/home/Home";
 import Login from "../components/login/Login";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Conclusion from "../components/conclusion/Conclusion";

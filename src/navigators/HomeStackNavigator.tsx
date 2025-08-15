@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Image, TouchableOpacity, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import Home from "../components/home/Home";
+console.log("Home component is:", Home);
+
 import Conclusion from "../components/conclusion/Conclusion";
 import { HomeScreenNavigationProp, HomeStackParamList } from "../commons/types/MyTypes";
 import AvatarButton from "../ui/AvatarButton";
