@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: '800',
         color: '#333',
         marginBottom: 12,
     },

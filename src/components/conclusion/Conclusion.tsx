@@ -1,45 +1,30 @@
 import { Image, ScrollView, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { ConclusionScreenNavigationProp, HomeScreenNavigationProp } from "../../commons/types/MyTypes"
+import { ConclusionScreenNavigationProp, PredictionResult } from "../../commons/types/MyTypes"
 import { ActivityIndicator, MD2Colors, Text, Card } from "react-native-paper"
 import { useEffect, useState } from "react";
-import APIs, { authMultipartAPI, endpoints } from "../../myapis/APIs";
+import { authMultipartAPI, endpoints } from "../../myapis/APIs";
 import { showToastWithGravityAndOffset } from "../../commons/toasts";
-import { Asset } from "react-native-image-picker";
 import { isNotEmptyString } from "../../commons/utils/stringUtils";
 import { predictImage } from "../../commons/utils/nativeFuntion";
 import { styles } from "./ConclusionStyle";
+import { useAppSelector } from "../../commons/hooks";
 
-type Props = {
-    navigation: ConclusionScreenNavigationProp;
-    route: { params: { asset?: Asset } };
-};
 
-interface PredictionResult {
-    predictedClass: string;
-    confidence: number;
-    processingTimeMs: number;
-    description?: string;
-    treatment?: Array<{
-        dosePerAcre?: string;
-        instruction?: string;
-        diseaseName?: string;
-        pesticideName?: string;
-        pesticideDes?: string;
-        diseaseDescription?: string
+const Conclusion: React.FC<ConclusionScreenNavigationProp> = ({ navigation, route }) => {
 
-    }>;
-}
-
-const Conclusion: React.FC<Props> = ({ navigation, route }) => {
-
-    const asset = route.params.asset;
+    const { asset, isOnDevice } = route.params;
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<null | PredictionResult>(null);
-
+    const { accessToken } = useAppSelector((state) => state.auth)
     useEffect(() => {
         console.log(asset?.uri);
     }, [])
+
+    const saveHistory = (form: FormData) => {
+
+
+    }
 
     const handlePredict = async () => {
         setIsLoading(true);
@@ -49,12 +34,23 @@ const Conclusion: React.FC<Props> = ({ navigation, route }) => {
         const type = asset?.type || 'image/jpeg';
         form.append('image', {
             uri: imageUri, name: imageName, type: type
-        });
+        } as any);
 
         try {
-            const response = await authMultipartAPI().post(endpoints['predictDiseaseApi'], form);
+            const response = await authMultipartAPI(accessToken || "").post(endpoints['predictDiseaseApi'], form);
             if (response.status == 200) {
                 setResult(response.data);
+                const saveHistoryForm = new FormData();
+                saveHistoryForm.append("predictedImage",
+                    {
+                        uri: imageUri, name: imageName, type: type
+                    } as any);
+                saveHistoryForm.append("treatmentId", response.data.treatment[0].id);
+                console.log("tmmid: " + response.data.treatment[0].id);
+
+                authMultipartAPI(accessToken || "").post(endpoints['saveHistory'], saveHistoryForm);
+                console.log("anh ", response.data);
+
             } else {
                 showToastWithGravityAndOffset(response.data);
             }
@@ -90,12 +86,18 @@ const Conclusion: React.FC<Props> = ({ navigation, route }) => {
         }
     };
 
+
     useEffect(() => {
         if (isNotEmptyString(asset?.uri)) {
-            // handlePredict();
-            handlePredictOnDevice();
+
+            if (isOnDevice) {
+                handlePredictOnDevice();
+            } else {
+                handlePredict();
+            }
         }
     }, [asset])
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -199,8 +201,7 @@ const Conclusion: React.FC<Props> = ({ navigation, route }) => {
                         <Card.Content>
                             <Text style={styles.warningTitle}>⚠️ Lưu ý quan trọng</Text>
                             <Text style={styles.warningText}>
-                                Kết quả này chỉ mang tính chất tham khảo. Vui lòng tham khảo ý kiến bác sĩ
-                                chuyên khoa để có chẩn đoán chính xác và phương pháp điều trị phù hợp.
+                                Kết quả này chỉ mang tính chất tham khảo. Vui lòng tham khảo ý kiến chuyên gia để có chẩn đoán chính xác và phương pháp điều trị phù hợp.
                             </Text>
                         </Card.Content>
                     </Card>

@@ -2,6 +2,6 @@
 
 
 export type StackParamList = {
-    Home: undefined;
+    HomeStack: undefined;
     Login: undefined;
 };
