@@ -32,7 +32,7 @@ npm run android
 yarn android
 ```
 
-### iOS
+### iOS ( !! not been developed yet )
 
 For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
 
